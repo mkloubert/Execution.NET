@@ -29,76 +29,61 @@
 
 using System;
 
-namespace MarcelJoachimKloubert.Workflows
+namespace MarcelJoachimKloubert.Execution.Workflows
 {
-    /// <summary>
-    /// Describes a workflow execution context.
-    /// </summary>
-    public interface IWorkflowExecutionContext
+    partial class WorkflowBase
     {
-        #region Properties (12)
-
         /// <summary>
-        /// Gets the list of arguments that were submitted to the <see cref="IWorkflow.Execute(object[])" /> method.
+        /// Simple implementation of the <see cref="IWorkflowExecutionContext" /> interface.
         /// </summary>
-        object[] Arguments { get; }
+        protected class WorkflowExecutionContext : IWorkflowExecutionContext
+        {
+            #region Properties (12)
 
-        /// <summary>
-        /// Gets or sets if operation should be canceled or not.
-        /// </summary>
-        bool Cancel { get; set; }
+            /// <inheriteddoc />
+            public object[] Arguments { get; set; }
 
-        /// <summary>
-        /// Gets or sets if execution should be continued after an exception was thrown or not.
-        /// </summary>
-        bool ContinueOnError { get; set; }
+            /// <inheriteddoc />
+            public bool Cancel { get; set; }
 
-        /// <summary>
-        /// Gets if the operation has been canceled or not.
-        /// </summary>
-        bool HasBeenCanceled { get; }
+            /// <inheriteddoc />
+            public bool ContinueOnError { get; set; }
 
-        /// <summary>
-        /// Gets the error from previous execution or <see langword="null" /> if no error occured.
-        /// </summary>
-        Exception LastError { get; }
+            /// <inheriteddoc />
+            public bool HasBeenCanceled { get; set; }
 
-        /// <summary>
-        /// Gets or sets the next action.
-        /// </summary>
-        WorkflowAction Next { get; set; }
+            /// <inheriteddoc />
+            public Exception LastError { get; set; }
 
-        /// <summary>
-        /// Sets an <see cref="Action" /> for the <see cref="IWorkflowExecutionContext.Next" /> property.
-        /// </summary>
-        Action NextAction { set; }
+            /// <inheriteddoc />
+            public WorkflowAction Next { get; set; }
 
-        /// <summary>
-        /// Gets or sets the value for the next execution.
-        /// </summary>
-        /// <remarks>This value value is resetted before each execution.</remarks>
-        object NextValue { get; set; }
+            /// <inheriteddoc />
+            public Action NextAction
+            {
+                set
+                {
+                    Next = value == null ? null
+                                         : new WorkflowAction((ctx) => value());
+                }
+            }
 
-        /// <summary>
-        /// Gets the value from the previous execution that was set in <see cref="IWorkflowExecutionContext.NextValue" /> property.
-        /// </summary>
-        object PreviousValue { get; }
+            /// <inheriteddoc />
+            public object NextValue { get; set; }
 
-        /// <summary>
-        /// Gets or sets the result object for an <see cref="IWorkflow.Execute(object[])" /> method.
-        /// </summary>
-        object Result { get; set; }
+            /// <inheriteddoc />
+            public object PreviousValue { get; set; }
 
-        /// <summary>
-        /// Gets or sets if all collected errors should be executed at the end of the execution chain or not.
-        /// </summary>
-        bool ThrowErrors { get; set; }
+            /// <inheriteddoc />
+            public object Result { get; set; }
 
-        /// <summary>
-        /// Gets or sets the value for whole execution chain.
-        /// </summary>
-        object Value { get; set; }
+            /// <inheriteddoc />
+            public bool ThrowErrors { get; set; }
 
-        #endregion Properties (12)
+            /// <inheriteddoc />
+            public object Value { get; set; }
+
+            #endregion Properties (12)
+        }
     }
 }

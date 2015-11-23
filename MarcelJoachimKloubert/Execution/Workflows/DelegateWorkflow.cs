@@ -29,55 +29,48 @@
 
 using System;
 
-namespace MarcelJoachimKloubert.Workflows
+namespace MarcelJoachimKloubert.Execution.Workflows
 {
     /// <summary>
-    /// Marks a method as point for handling a workflow error / exception.
+    /// A workflow based on a delegate.
     /// </summary>
-    [AttributeUsage(AttributeTargets.Method,
-                    AllowMultiple = true,
-                    Inherited = false)]
-    public class OnWorkflowErrorAttribute : NextWorkflowStepAttribute
+    public class DelegateWorkflow : SimpleWorkflowBase
     {
-        #region Constructors (3)
+        #region Fields (1)
+
+        private readonly WorkflowAction _START_ACTION;
+
+        #endregion Fields (1)
+
+        #region Constructors (1)
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="OnWorkflowErrorAttribute" /> class.
+        /// Initializes a new instance of the <see cref="DelegateWorkflow" /> class.
         /// </summary>
-        /// <param name="member">The value for the <see cref="NextWorkflowStepAttribute.Member" /> property.</param>
-        /// <param name="contract">The value for the <see cref="WorkflowAttributeBase.Contract" /> property.</param>
-        public OnWorkflowErrorAttribute(string member, Type contract)
-            : base(member: member,
-                   contract: contract)
-        {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="OnWorkflowErrorAttribute" /> class.
-        /// </summary>
-        /// <param name="member">The value for the <see cref="NextWorkflowStepAttribute.Member" /> property.</param>
-        /// <param name="contractName">The value for the <see cref="WorkflowAttributeBase.Contract" /> property.</param>
-        /// <exception cref="ArgumentException">
-        /// <paramref name="member" /> is invalid.
-        /// </exception>
+        /// <param name="startAction">The start action.</param>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="member" /> is <see langword="null" />.
+        /// <paramref name="startAction" /> is <see langword="null" />.
         /// </exception>
-        public OnWorkflowErrorAttribute(string member, string contractName)
-            : base(member: member,
-                   contractName: contractName)
+        public DelegateWorkflow(WorkflowAction startAction)
         {
+            if (startAction == null)
+            {
+                throw new ArgumentNullException("startAction");
+            }
+
+            _START_ACTION = startAction;
         }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="OnWorkflowErrorAttribute" /> class.
-        /// </summary>
-        /// <param name="member">The value for the <see cref="NextWorkflowStepAttribute.Member" /> property.</param>
-        public OnWorkflowErrorAttribute(string member)
-            : base(member: member)
+        #endregion Constructors (1)
+
+        #region Methods (1)
+
+        /// <inheriteddoc />
+        protected sealed override void ExecuteFirstStep(IWorkflowExecutionContext ctx)
         {
+            _START_ACTION(ctx);
         }
 
-        #endregion Constructors
+        #endregion Methods (1)
     }
 }

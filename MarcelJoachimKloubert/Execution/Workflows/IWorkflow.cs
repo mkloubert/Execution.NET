@@ -27,63 +27,31 @@
  *                                                                                                                    *
  **********************************************************************************************************************/
 
-using System;
+using System.Collections.Generic;
 
-namespace MarcelJoachimKloubert.Workflows
+namespace MarcelJoachimKloubert.Execution.Workflows
 {
-    partial class WorkflowBase
+    /// <summary>
+    /// Describes a worklfow.
+    /// </summary>
+    public interface IWorkflow : IEnumerable<WorkflowFunc>
     {
+        #region Methods (2)
+
         /// <summary>
-        /// Simple implementation of the <see cref="IWorkflowExecutionContext" /> interface.
+        /// Executes the workflow.
         /// </summary>
-        protected class WorkflowExecutionContext : IWorkflowExecutionContext
-        {
-            #region Properties (12)
+        /// <param name="argList">The arguments for the execution.</param>
+        /// <returns>The final result of the execution.</returns>
+        object Execute(IEnumerable<object> argList);
 
-            /// <inheriteddoc />
-            public object[] Arguments { get; set; }
+        /// <summary>
+        /// Executes the workflow.
+        /// </summary>
+        /// <param name="args">The arguments for the execution.</param>
+        /// <returns>The final result of the execution.</returns>
+        object Execute(params object[] args);
 
-            /// <inheriteddoc />
-            public bool Cancel { get; set; }
-
-            /// <inheriteddoc />
-            public bool ContinueOnError { get; set; }
-
-            /// <inheriteddoc />
-            public bool HasBeenCanceled { get; set; }
-
-            /// <inheriteddoc />
-            public Exception LastError { get; set; }
-
-            /// <inheriteddoc />
-            public WorkflowAction Next { get; set; }
-
-            /// <inheriteddoc />
-            public Action NextAction
-            {
-                set
-                {
-                    Next = value == null ? null
-                                         : new WorkflowAction((ctx) => value());
-                }
-            }
-
-            /// <inheriteddoc />
-            public object NextValue { get; set; }
-
-            /// <inheriteddoc />
-            public object PreviousValue { get; set; }
-
-            /// <inheriteddoc />
-            public object Result { get; set; }
-
-            /// <inheriteddoc />
-            public bool ThrowErrors { get; set; }
-
-            /// <inheriteddoc />
-            public object Value { get; set; }
-
-            #endregion Properties (12)
-        }
+        #endregion Methods (2)
     }
 }

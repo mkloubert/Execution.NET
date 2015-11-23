@@ -29,44 +29,76 @@
 
 using System;
 
-namespace MarcelJoachimKloubert.Workflows
+namespace MarcelJoachimKloubert.Execution.Workflows
 {
     /// <summary>
-    /// Marks a method as start point for a workflow.
+    /// Describes a workflow execution context.
     /// </summary>
-    [AttributeUsage(AttributeTargets.Method,
-                    AllowMultiple = true,
-                    Inherited = false)]
-    public class WorkflowStartAttribute : WorkflowAttributeBase
+    public interface IWorkflowExecutionContext
     {
-        #region Constructors (3)
+        #region Properties (12)
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="WorkflowStartAttribute"/> class.
+        /// Gets the list of arguments that were submitted to the <see cref="IWorkflow.Execute(object[])" /> method.
         /// </summary>
-        /// <param name="contract">The value for the <see cref="WorkflowAttributeBase.Contract" /> property.</param>
-        public WorkflowStartAttribute(Type contract)
-            : base(contract: contract)
-        {
-        }
+        object[] Arguments { get; }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="WorkflowStartAttribute"/> class.
+        /// Gets or sets if operation should be canceled or not.
         /// </summary>
-        /// <param name="contractName">The value for the <see cref="WorkflowAttributeBase.Contract" /> property.</param>
-        public WorkflowStartAttribute(string contractName)
-            : base(contractName: contractName)
-        {
-        }
+        bool Cancel { get; set; }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="WorkflowStartAttribute"/> class.
+        /// Gets or sets if execution should be continued after an exception was thrown or not.
         /// </summary>
-        public WorkflowStartAttribute()
-            : base()
-        {
-        }
+        bool ContinueOnError { get; set; }
 
-        #endregion Constructors
+        /// <summary>
+        /// Gets if the operation has been canceled or not.
+        /// </summary>
+        bool HasBeenCanceled { get; }
+
+        /// <summary>
+        /// Gets the error from previous execution or <see langword="null" /> if no error occured.
+        /// </summary>
+        Exception LastError { get; }
+
+        /// <summary>
+        /// Gets or sets the next action.
+        /// </summary>
+        WorkflowAction Next { get; set; }
+
+        /// <summary>
+        /// Sets an <see cref="Action" /> for the <see cref="IWorkflowExecutionContext.Next" /> property.
+        /// </summary>
+        Action NextAction { set; }
+
+        /// <summary>
+        /// Gets or sets the value for the next execution.
+        /// </summary>
+        /// <remarks>This value value is resetted before each execution.</remarks>
+        object NextValue { get; set; }
+
+        /// <summary>
+        /// Gets the value from the previous execution that was set in <see cref="IWorkflowExecutionContext.NextValue" /> property.
+        /// </summary>
+        object PreviousValue { get; }
+
+        /// <summary>
+        /// Gets or sets the result object for an <see cref="IWorkflow.Execute(object[])" /> method.
+        /// </summary>
+        object Result { get; set; }
+
+        /// <summary>
+        /// Gets or sets if all collected errors should be executed at the end of the execution chain or not.
+        /// </summary>
+        bool ThrowErrors { get; set; }
+
+        /// <summary>
+        /// Gets or sets the value for whole execution chain.
+        /// </summary>
+        object Value { get; set; }
+
+        #endregion Properties (12)
     }
 }
