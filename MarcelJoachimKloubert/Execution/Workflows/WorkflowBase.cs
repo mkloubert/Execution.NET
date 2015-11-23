@@ -39,12 +39,6 @@ namespace MarcelJoachimKloubert.Execution.Workflows
     /// </summary>
     public abstract partial class WorkflowBase : IWorkflow
     {
-        #region Fields (1)
-
-        private readonly object _SYNC_ROOT;
-
-        #endregion Fields (1)
-
         #region Constructors (1)
 
         /// <summary>
@@ -53,7 +47,7 @@ namespace MarcelJoachimKloubert.Execution.Workflows
         /// <param name="syncRoot">The value for the <see cref="WorkflowBase.SyncRoot" /> property.</param>
         protected WorkflowBase(object syncRoot = null)
         {
-            _SYNC_ROOT = syncRoot ?? new object();
+            SyncRoot = syncRoot ?? new object();
         }
 
         #endregion Constructors (1)
@@ -63,10 +57,7 @@ namespace MarcelJoachimKloubert.Execution.Workflows
         /// <summary>
         /// Gets the object for thread safe operations.
         /// </summary>
-        public virtual object SyncRoot
-        {
-            get { return _SYNC_ROOT; }
-        }
+        public virtual object SyncRoot { get; }
 
         /// <summary>
         /// Gets or sets an object that should be linked with that instance.

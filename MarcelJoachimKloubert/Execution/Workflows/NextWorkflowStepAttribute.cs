@@ -68,13 +68,13 @@ namespace MarcelJoachimKloubert.Execution.Workflows
         {
             if (member == null)
             {
-                throw new ArgumentNullException("member");
+                throw new ArgumentNullException(nameof(member));
             }
 
             Member = member.Trim();
             if (Member == string.Empty)
             {
-                throw new ArgumentException("member");
+                throw new ArgumentException(nameof(member));
             }
         }
 

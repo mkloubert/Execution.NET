@@ -55,7 +55,7 @@ namespace MarcelJoachimKloubert.Execution.Workflows
         {
             if (startAction == null)
             {
-                throw new ArgumentNullException("startAction");
+                throw new ArgumentNullException(nameof(startAction));
             }
 
             _START_ACTION = startAction;

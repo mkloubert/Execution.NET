@@ -57,10 +57,7 @@ namespace MarcelJoachimKloubert.Execution.Workflows
         /// <summary>
         /// Gets the contract name.
         /// </summary>
-        public virtual string Contract
-        {
-            get { return null; }
-        }
+        public virtual string Contract => null;
 
         /// <summary>
         /// Gets the start object.
