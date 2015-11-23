@@ -30,129 +30,67 @@
 using System;
 using System.Collections.Generic;
 
-namespace MarcelJoachimKloubert.Execution.Functions
+namespace MarcelJoachimKloubert.Execution.Workflows
 {
-    #region CLASS: FunctionWrapper<TFunc>
+    #region CLASS: WorkflowWrapper<TFunc>
 
     /// <summary>
-    /// Wraps a function.
+    /// Wraps a workflow.
     /// </summary>
-    /// <typeparam name="TFunc">Type of the function to wrap.</typeparam>
-    public class FunctionWrapper<TFunc> : FunctionBase
-        where TFunc : IFunction
+    /// <typeparam name="TWorkflow">Type of the function to wrap.</typeparam>
+    public partial class SynchronizedWorkflow<TWorkflow> : WorkflowWrapper<TWorkflow>
+        where TWorkflow : IWorkflow
     {
         #region Constructors (1)
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="FunctionWrapper{TFunc}" /> class.
+        /// Initializes a new instance of the <see cref="SynchronizedWorkflow{TWorkflow}" /> class.
         /// </summary>
-        /// <param name="baseFunc">The function to wrap.</param>
+        /// <param name="baseWorkflow">The function to wrap.</param>
         /// <param name="syncRoot">The custom object for thread safe operations.</param>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="baseFunc" /> is <see langword="null" />.
+        /// <paramref name="baseWorkflow" /> is <see langword="null" />.
         /// </exception>
-        public FunctionWrapper(TFunc baseFunc, object syncRoot = null)
-            : base(syncRoot: syncRoot)
+        public SynchronizedWorkflow(TWorkflow baseWorkflow, object syncRoot = null)
+            : base(baseWorkflow: baseWorkflow,
+                   syncRoot: syncRoot)
         {
-            if (baseFunc == null)
-            {
-                throw new ArgumentNullException("baseFunc");
-            }
-
-            BaseFunction = baseFunc;
         }
 
         #endregion Constructors (1)
 
-        #region Properties (4)
-
-        /// <summary>
-        /// Gets the wrapped function.
-        /// </summary>
-        public TFunc BaseFunction { get; private set; }
+        #region Methods (1)
 
         /// <inheriteddoc />
-        public sealed override Guid Id
+        protected sealed override IEnumerable<WorkflowFunc> GetFunctions()
         {
-            get { return BaseFunction.Id; }
+            return new WorkflowEnumerable(this);
         }
 
-        /// <inheriteddoc />
-        public sealed override string Name
-        {
-            get { return BaseFunction.Name; }
-        }
-
-        /// <inheriteddoc />
-        public sealed override string Namespace
-        {
-            get { return base.Namespace; }
-        }
-
-        #endregion Properties (4)
-
-        #region Methods (4)
-
-        /// <inheriteddoc />
-        public sealed override bool Equals(object obj)
-        {
-            return BaseFunction.Equals(obj);
-        }
-
-        /// <inheriteddoc />
-        public sealed override int GetHashCode()
-        {
-            return BaseFunction.GetHashCode();
-        }
-
-        /// <inheriteddoc />
-        protected override void OnExecute(IDictionary<string, object> input, IDictionary<string, object> output)
-        {
-            var result = BaseFunction.Execute(input);
-            if (result == null)
-            {
-                return;
-            }
-
-            using (var e = result.GetEnumerator())
-            {
-                while (e.MoveNext())
-                {
-                    output.Add(e.Current);
-                }
-            }
-        }
-
-        /// <inheriteddoc />
-        public sealed override string ToString()
-        {
-            return BaseFunction.ToString();
-        }
-
-        #endregion Methods (4)
+        #endregion Methods (1)
     }
 
-    #endregion CLASS: FunctionWrapper<TFunc>
+    #endregion CLASS: WorkflowWrapper<TFunc>
 
-    #region CLASS: FunctionWrapper
+    #region CLASS: WorkflowWrapper
 
     /// <summary>
-    /// Wraps a function.
+    /// Wraps a workflow.
     /// </summary>
-    public class FunctionWrapper : FunctionWrapper<IFunction>
+    public class SynchronizedWorkflow : SynchronizedWorkflow<IWorkflow>
     {
         #region Constructors (1)
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="FunctionWrapper" /> class.
+        /// Initializes a new instance of the <see cref="SynchronizedWorkflow" /> class.
         /// </summary>
-        /// <param name="baseFunc">The function to wrap.</param>
+        /// <param name="baseWorkflow">The workflow to wrap.</param>
         /// <param name="syncRoot">The custom object for thread safe operations.</param>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="baseFunc" /> is <see langword="null" />.
+        /// <paramref name="baseWorkflow" /> is <see langword="null" />.
         /// </exception>
-        public FunctionWrapper(IFunction baseFunc, object syncRoot = null)
-            : base(baseFunc: baseFunc,
+        public SynchronizedWorkflow(IWorkflow baseWorkflow, object syncRoot = null)
+            : base(baseWorkflow: baseWorkflow,
                    syncRoot: syncRoot)
         {
         }
@@ -160,5 +98,5 @@ namespace MarcelJoachimKloubert.Execution.Functions
         #endregion Constructors (1)
     }
 
-    #endregion CLASS: FunctionWrapper
+    #endregion CLASS: WorkflowWrapper
 }

@@ -27,138 +27,131 @@
  *                                                                                                                    *
  **********************************************************************************************************************/
 
-using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 
-namespace MarcelJoachimKloubert.Execution.Functions
+namespace MarcelJoachimKloubert.Execution.Workflows
 {
-    #region CLASS: FunctionWrapper<TFunc>
-
-    /// <summary>
-    /// Wraps a function.
-    /// </summary>
-    /// <typeparam name="TFunc">Type of the function to wrap.</typeparam>
-    public class FunctionWrapper<TFunc> : FunctionBase
-        where TFunc : IFunction
+    partial class SynchronizedWorkflow<TWorkflow>
     {
-        #region Constructors (1)
+        #region STRUCT: WorkflowEnumerable
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="FunctionWrapper{TFunc}" /> class.
-        /// </summary>
-        /// <param name="baseFunc">The function to wrap.</param>
-        /// <param name="syncRoot">The custom object for thread safe operations.</param>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="baseFunc" /> is <see langword="null" />.
-        /// </exception>
-        public FunctionWrapper(TFunc baseFunc, object syncRoot = null)
-            : base(syncRoot: syncRoot)
+        private struct WorkflowEnumerable : IEnumerable<WorkflowFunc>
         {
-            if (baseFunc == null)
+            #region Fields (1)
+
+            private readonly SynchronizedWorkflow<TWorkflow> _WORKFLOW;
+
+            #endregion Fields (1)
+
+            #region Constructors (1)
+
+            internal WorkflowEnumerable(SynchronizedWorkflow<TWorkflow> workflow)
             {
-                throw new ArgumentNullException("baseFunc");
+                _WORKFLOW = workflow;
             }
 
-            BaseFunction = baseFunc;
-        }
+            #endregion Constructors (1)
 
-        #endregion Constructors (1)
+            #region Methods (2)
 
-        #region Properties (4)
-
-        /// <summary>
-        /// Gets the wrapped function.
-        /// </summary>
-        public TFunc BaseFunction { get; private set; }
-
-        /// <inheriteddoc />
-        public sealed override Guid Id
-        {
-            get { return BaseFunction.Id; }
-        }
-
-        /// <inheriteddoc />
-        public sealed override string Name
-        {
-            get { return BaseFunction.Name; }
-        }
-
-        /// <inheriteddoc />
-        public sealed override string Namespace
-        {
-            get { return base.Namespace; }
-        }
-
-        #endregion Properties (4)
-
-        #region Methods (4)
-
-        /// <inheriteddoc />
-        public sealed override bool Equals(object obj)
-        {
-            return BaseFunction.Equals(obj);
-        }
-
-        /// <inheriteddoc />
-        public sealed override int GetHashCode()
-        {
-            return BaseFunction.GetHashCode();
-        }
-
-        /// <inheriteddoc />
-        protected override void OnExecute(IDictionary<string, object> input, IDictionary<string, object> output)
-        {
-            var result = BaseFunction.Execute(input);
-            if (result == null)
+            public IEnumerator<WorkflowFunc> GetEnumerator()
             {
-                return;
+                return new WorkflowEnumerator(_WORKFLOW);
             }
 
-            using (var e = result.GetEnumerator())
+            IEnumerator IEnumerable.GetEnumerator()
             {
-                while (e.MoveNext())
+                return GetEnumerator();
+            }
+
+            #endregion Methods (2)
+        }
+
+        #endregion STRUCT: WorkflowEnumerable
+
+        #region STRUCT: WorkflowEnumerator
+
+        private struct WorkflowEnumerator : IEnumerator<WorkflowFunc>
+        {
+            #region Fields (2)
+
+            private readonly IEnumerator<WorkflowFunc> _ENUMERATOR;
+            private readonly object _SYNC;
+
+            #endregion Fields (2)
+
+            #region Constructors (1)
+
+            internal WorkflowEnumerator(SynchronizedWorkflow<TWorkflow> workflow)
+            {
+                _ENUMERATOR = workflow.BaseWorkflow.GetEnumerator();
+                _SYNC = workflow.SyncRoot;
+            }
+
+            #endregion Constructors (1)
+
+            #region Properties (2)
+
+            public WorkflowFunc Current
+            {
+                get
                 {
-                    output.Add(e.Current);
+                    var syncRoot = _SYNC;
+
+                    WorkflowFunc currrentFunc;
+                    lock (syncRoot)
+                    {
+                        currrentFunc = _ENUMERATOR.Current;
+                    }
+
+                    return currrentFunc == null ? null : new WorkflowFunc((args) =>
+                        {
+                            lock (syncRoot)
+                            {
+                                return currrentFunc(args);
+                            }
+                        });
                 }
             }
+
+            object IEnumerator.Current
+            {
+                get { return Current; }
+            }
+
+            #endregion Properties (2)
+
+            #region Methods (3)
+
+            public void Dispose()
+            {
+                lock (_SYNC)
+                {
+                    _ENUMERATOR.Dispose();
+                }
+            }
+
+            public bool MoveNext()
+            {
+                lock (_SYNC)
+                {
+                    return _ENUMERATOR.MoveNext();
+                }
+            }
+
+            public void Reset()
+            {
+                lock (_SYNC)
+                {
+                    _ENUMERATOR.Reset();
+                }
+            }
+
+            #endregion Methods (3)
         }
 
-        /// <inheriteddoc />
-        public sealed override string ToString()
-        {
-            return BaseFunction.ToString();
-        }
-
-        #endregion Methods (4)
+        #endregion STRUCT: WorkflowEnumerator
     }
-
-    #endregion CLASS: FunctionWrapper<TFunc>
-
-    #region CLASS: FunctionWrapper
-
-    /// <summary>
-    /// Wraps a function.
-    /// </summary>
-    public class FunctionWrapper : FunctionWrapper<IFunction>
-    {
-        #region Constructors (1)
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="FunctionWrapper" /> class.
-        /// </summary>
-        /// <param name="baseFunc">The function to wrap.</param>
-        /// <param name="syncRoot">The custom object for thread safe operations.</param>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="baseFunc" /> is <see langword="null" />.
-        /// </exception>
-        public FunctionWrapper(IFunction baseFunc, object syncRoot = null)
-            : base(baseFunc: baseFunc,
-                   syncRoot: syncRoot)
-        {
-        }
-
-        #endregion Constructors (1)
-    }
-
-    #endregion CLASS: FunctionWrapper
 }

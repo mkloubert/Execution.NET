@@ -39,7 +39,7 @@ namespace MarcelJoachimKloubert.Extensions
     /// </summary>
     public static class MJKWorkflowExtensionMethods
     {
-        #region Methods (2)
+        #region Methods (3)
 
         /// <summary>
         /// Async execution of an <see cref="IWorkflow" />.
@@ -89,6 +89,21 @@ namespace MarcelJoachimKloubert.Extensions
                 }, state: new object[] { workflow, args });
         }
 
-        #endregion Methods (2)
+        /// <summary>
+        /// Returns a thread safe version of a workflow.
+        /// </summary>
+        /// <param name="workflow">The workflow to wrap.</param>
+        /// <param name="syncRoot">The custom object for thread safe operations.</param>
+        /// <returns>
+        /// The workflow wrapper or <see langword="null" /> if <paramref name="workflow" />
+        /// is also <see langword="null" />.
+        /// </returns>
+        public static IWorkflow Synchronize(this IWorkflow workflow, object syncRoot = null)
+        {
+            return workflow != null ? new SynchronizedWorkflow(baseWorkflow: workflow, syncRoot: syncRoot)
+                                    : null;
+        }
+
+        #endregion Methods (3)
     }
 }
