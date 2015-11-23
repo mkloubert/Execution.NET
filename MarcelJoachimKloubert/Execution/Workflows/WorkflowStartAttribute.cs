@@ -29,7 +29,7 @@
 
 using System;
 
-namespace MarcelJoachimKloubert.Workflows
+namespace MarcelJoachimKloubert.Execution.Workflows
 {
     /// <summary>
     /// Marks a method as start point for a workflow.
@@ -37,66 +37,36 @@ namespace MarcelJoachimKloubert.Workflows
     [AttributeUsage(AttributeTargets.Method,
                     AllowMultiple = true,
                     Inherited = false)]
-    public class NextWorkflowStepAttribute : WorkflowAttributeBase
+    public class WorkflowStartAttribute : WorkflowAttributeBase
     {
         #region Constructors (3)
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="NextWorkflowStepAttribute" /> class.
+        /// Initializes a new instance of the <see cref="WorkflowStartAttribute"/> class.
         /// </summary>
-        /// <param name="member">The value for the <see cref="NextWorkflowStepAttribute.Member" /> property.</param>
         /// <param name="contract">The value for the <see cref="WorkflowAttributeBase.Contract" /> property.</param>
-        public NextWorkflowStepAttribute(string member, Type contract)
-            : this(member: member,
-                   contractName: GetContractName(contract))
+        public WorkflowStartAttribute(Type contract)
+            : base(contract: contract)
         {
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="NextWorkflowStepAttribute" /> class.
+        /// Initializes a new instance of the <see cref="WorkflowStartAttribute"/> class.
         /// </summary>
-        /// <param name="member">The value for the <see cref="NextWorkflowStepAttribute.Member" /> property.</param>
         /// <param name="contractName">The value for the <see cref="WorkflowAttributeBase.Contract" /> property.</param>
-        /// <exception cref="ArgumentException">
-        /// <paramref name="member" /> is invalid.
-        /// </exception>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="member" /> is <see langword="null" />.
-        /// </exception>
-        public NextWorkflowStepAttribute(string member, string contractName)
+        public WorkflowStartAttribute(string contractName)
             : base(contractName: contractName)
         {
-            if (member == null)
-            {
-                throw new ArgumentNullException("member");
-            }
-
-            Member = member.Trim();
-            if (Member == string.Empty)
-            {
-                throw new ArgumentException("member");
-            }
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="NextWorkflowStepAttribute" /> class.
+        /// Initializes a new instance of the <see cref="WorkflowStartAttribute"/> class.
         /// </summary>
-        /// <param name="member">The value for the <see cref="NextWorkflowStepAttribute.Member" /> property.</param>
-        public NextWorkflowStepAttribute(string member)
-            : this(member: member,
-                   contractName: null)
+        public WorkflowStartAttribute()
+            : base()
         {
         }
 
         #endregion Constructors
-
-        #region Properties (1)
-
-        /// <summary>
-        /// Gets or sets the name of the target member.
-        /// </summary>
-        public string Member { get; set; }
-
-        #endregion
     }
 }

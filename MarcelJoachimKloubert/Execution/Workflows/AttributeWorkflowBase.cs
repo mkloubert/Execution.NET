@@ -32,7 +32,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-namespace MarcelJoachimKloubert.Workflows
+namespace MarcelJoachimKloubert.Execution.Workflows
 {
     /// <summary>
     /// A basic workflow that uses attributes.

@@ -27,87 +27,66 @@
  *                                                                                                                    *
  **********************************************************************************************************************/
 
-using System;
-
-namespace MarcelJoachimKloubert.Workflows
+namespace MarcelJoachimKloubert.Execution.Workflows
 {
     /// <summary>
-    /// A basic workflow attribute.
+    /// A basic object for a simple (method based) workflow.
     /// </summary>
-    public abstract class WorkflowAttributeBase : Attribute
+    public abstract class SimpleWorkflowBase : AttributeWorkflowBase
     {
-        #region Constructors (3)
+        #region Constructors (1)
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="WorkflowAttributeBase"/> class.
+        /// Initialites a new instance of the <see cref="SimpleWorkflowBase" /> class.
         /// </summary>
-        /// <param name="contract">The value for the <see cref="WorkflowAttributeBase.Contract" /> property.</param>
-        protected WorkflowAttributeBase(Type contract)
-            : this(contractName: GetContractName(contract))
+        /// <param name="syncRoot">The value for the <see cref="WorkflowBase.SyncRoot" /> property.</param>
+        protected SimpleWorkflowBase(object syncRoot = null)
+            : base(syncRoot: syncRoot)
         {
         }
 
+        #endregion Constructors (1)
+
+        #region Methods (4)
+
         /// <summary>
-        /// Initializes a new instance of the <see cref="WorkflowAttributeBase"/> class.
+        /// Handles an execution error.
         /// </summary>
-        /// <param name="contractName">The value for the <see cref="WorkflowAttributeBase.Contract" /> property.</param>
-        protected WorkflowAttributeBase(string contractName)
+        /// <param name="ctx">The current execution context.</param>
+        protected virtual void HandleError(IWorkflowExecutionContext ctx)
         {
-            Contract = ParseContractName(contractName);
+            ctx.ContinueOnError = false;
+            throw ctx.LastError;
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="NextWorkflowStepAttribute"/> class.
+        /// The first action for <see cref="SimpleWorkflowBase.StartWorkflow(IWorkflowExecutionContext)" />.
         /// </summary>
-        protected WorkflowAttributeBase()
-            : this(contractName: null)
-        {
-        }
-
-        #endregion Constructors
-
-        #region Properties (1)
+        /// <param name="ctx">The current execution context.</param>
+        protected abstract void ExecuteFirstStep(IWorkflowExecutionContext ctx);
 
         /// <summary>
-        /// Gets or sets the contract.
+        /// The next (default) action for <see cref="SimpleWorkflowBase.StartWorkflow(IWorkflowExecutionContext)" />.
         /// </summary>
-        public string Contract { get; set; }
-
-        #endregion Properties (1)
-
-        #region Methods (2)
-
-        /// <summary>
-        /// Returns the contract name from a <see cref="Type" /> object.
-        /// </summary>
-        /// <param name="type">The type from where to get the contract name from.</param>
-        /// <returns>
-        /// The contract name or <see langword="null" /> is <paramref name="type" /> is also <see langword="null" />.
-        /// </returns>
-        public static string GetContractName(Type type)
+        /// <param name="ctx">The current execution context.</param>
+        [OnWorkflowError("HandleError")]
+        protected virtual void ExecuteNextStep(IWorkflowExecutionContext ctx)
         {
-            return type != null ? string.Format("{0}{1}{2}", type.AssemblyQualifiedName
-                                                           , "\n"
-                                                           , type.FullName)
-                                : null;
+            // do nothing by default
         }
 
         /// <summary>
-        /// Parses a contract name.
+        /// Starts the workflow.
         /// </summary>
-        /// <param name="contract">The input value.</param>
-        /// <returns>The parsed value.</returns>
-        public static string ParseContractName(string contract)
+        /// <param name="ctx">The current execution context.</param>
+        [WorkflowStart]
+        [NextWorkflowStep("ExecuteNextStep")]
+        [OnWorkflowError("HandleError")]
+        protected void StartWorkflow(IWorkflowExecutionContext ctx)
         {
-            contract = (contract ?? string.Empty).ToUpper().Trim();
-            if (contract == string.Empty)
-            {
-                contract = null;
-            }
-
-            return contract;
+            ExecuteFirstStep(ctx);
         }
 
-        #endregion Methods (2)
+        #endregion Methods (4)
     }
 }

@@ -32,7 +32,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace MarcelJoachimKloubert.Workflows
+namespace MarcelJoachimKloubert.Execution.Workflows
 {
     /// <summary>
     /// A basic workflow.
