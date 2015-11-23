@@ -44,6 +44,11 @@
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Execution\Functions\FunctionBase.cs" />
+    <Compile Include="Execution\Functions\FunctionWrapper.cs" />
+    <Compile Include="Execution\Functions\IFunction.cs" />
+    <Compile Include="Execution\Functions\SynchronizedFunction.cs" />
+    <Compile Include="Extensions\Functions.cs" />
     <Compile Include="Extensions\Workflows.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Execution\Workflows\AttributeWorkflowBase.cs" />
