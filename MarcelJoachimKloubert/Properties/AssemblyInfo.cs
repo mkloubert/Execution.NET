@@ -27,9 +27,8 @@
  *                                                                                                                    *
  **********************************************************************************************************************/
 
+using System.Resources;
 using System.Reflection;
-using System.Runtime.InteropServices;
-
 
 [assembly: AssemblyTitle("Execution.NET")]
 [assembly: AssemblyDescription("Classes for execution operations.")]
@@ -39,10 +38,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyCopyright("Copyright © 2015  Marcel Joachim Kloubert")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
-
-[assembly: ComVisible(false)]
-
-[assembly: Guid("93d84f99-60d8-4fa4-b883-d708d08035dc")]
+[assembly: NeutralResourcesLanguage("de")]
 
 [assembly: AssemblyVersion("1.0.0.0")]
 [assembly: AssemblyFileVersion("1.0.0.0")]
