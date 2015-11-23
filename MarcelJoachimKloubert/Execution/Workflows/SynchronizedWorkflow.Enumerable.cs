@@ -27,59 +27,131 @@
  *                                                                                                                    *
  **********************************************************************************************************************/
 
-using MarcelJoachimKloubert.Execution.Functions;
-using System;
+using System.Collections;
 using System.Collections.Generic;
-using System.Threading.Tasks;
+using System.Runtime.InteropServices;
 
-namespace MarcelJoachimKloubert.Extensions
+namespace MarcelJoachimKloubert.Execution.Workflows
 {
-    /// <summary>
-    /// Function extension methods.
-    /// </summary>
-    public static class MJKFunctionExtensionMethods
+    partial class SynchronizedWorkflow<TWorkflow>
     {
-        #region Methods (1)
+        #region STRUCT: WorkflowEnumerable
 
-        /// <summary>
-        /// Async execution of an <see cref="IFunction" />.
-        /// </summary>
-        /// <param name="func">The function to execute.</param>
-        /// <param name="params">The list of parameters for the execution.</param>
-        /// <returns>The running task.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="func" /> is <see langword="null" />.
-        /// </exception>
-        public static async Task<IDictionary<string, object>> ExecuteAsync(this IFunction func, IEnumerable<KeyValuePair<string, object>> @params = null)
+        private struct WorkflowEnumerable : IEnumerable<WorkflowFunc>
         {
-            if (func == null)
+            #region Fields (1)
+
+            private readonly SynchronizedWorkflow<TWorkflow> _WORKFLOW;
+
+            #endregion Fields (1)
+
+            #region Constructors (1)
+
+            internal WorkflowEnumerable(SynchronizedWorkflow<TWorkflow> workflow)
             {
-                throw new ArgumentNullException(nameof(func));
+                _WORKFLOW = workflow;
             }
 
-            return await Task.Factory.StartNew(function: (state) =>
-                {
-                    var taskArgs = (object[])state;
+            #endregion Constructors (1)
 
-                    return ((IFunction)taskArgs[0]).Execute(@params: (IEnumerable<KeyValuePair<string, object>>)taskArgs[1]);
-                }, state: new object[] { func, @params });
+            #region Methods (2)
+
+            public IEnumerator<WorkflowFunc> GetEnumerator()
+            {
+                return new WorkflowEnumerator(_WORKFLOW);
+            }
+
+            IEnumerator IEnumerable.GetEnumerator()
+            {
+                return GetEnumerator();
+            }
+
+            #endregion Methods (2)
         }
 
-        /// <summary>
-        /// Returns a thread safe version of a function.
-        /// </summary>
-        /// <param name="func">The function to wrap.</param>
-        /// <param name="syncRoot">The custom object for thread safe operations.</param>
-        /// <returns>
-        /// The function wrapper or <see langword="null" /> if <paramref name="func" />
-        /// is also <see langword="null" />.
-        /// </returns>
-        public static IFunction Synchronize(this IFunction func, object syncRoot = null)
+        #endregion STRUCT: WorkflowEnumerable
+
+        #region STRUCT: WorkflowEnumerator
+
+        private struct WorkflowEnumerator : IEnumerator<WorkflowFunc>
         {
-            return func != null ? new SynchronizedFunction(baseFunc: func, syncRoot: syncRoot)
-                                : null;
+            #region Fields (2)
+
+            private readonly IEnumerator<WorkflowFunc> _ENUMERATOR;
+            private readonly object _SYNC;
+
+            #endregion Fields (2)
+
+            #region Constructors (1)
+
+            internal WorkflowEnumerator(SynchronizedWorkflow<TWorkflow> workflow)
+            {
+                _ENUMERATOR = workflow.BaseWorkflow.GetEnumerator();
+                _SYNC = workflow.SyncRoot;
+            }
+
+            #endregion Constructors (1)
+
+            #region Properties (2)
+
+            public WorkflowFunc Current
+            {
+                get
+                {
+                    var syncRoot = _SYNC;
+
+                    WorkflowFunc currrentFunc;
+                    lock (syncRoot)
+                    {
+                        currrentFunc = _ENUMERATOR.Current;
+                    }
+
+                    return currrentFunc == null ? null : new WorkflowFunc((args) =>
+                        {
+                            lock (syncRoot)
+                            {
+                                return currrentFunc(args);
+                            }
+                        });
+                }
+            }
+
+            object IEnumerator.Current
+            {
+                get { return Current; }
+            }
+
+            #endregion Properties (2)
+
+            #region Methods (3)
+
+            public void Dispose()
+            {
+                lock (_SYNC)
+                {
+                    _ENUMERATOR.Dispose();
+                }
+            }
+
+            public bool MoveNext()
+            {
+                lock (_SYNC)
+                {
+                    return _ENUMERATOR.MoveNext();
+                }
+            }
+
+            public void Reset()
+            {
+                lock (_SYNC)
+                {
+                    _ENUMERATOR.Reset();
+                }
+            }
+
+            #endregion Methods (3)
         }
 
-        #endregion Methods (1)
+        #endregion STRUCT: WorkflowEnumerator
     }
 }

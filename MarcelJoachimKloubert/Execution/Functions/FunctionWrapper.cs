@@ -100,7 +100,7 @@ namespace MarcelJoachimKloubert.Execution.Functions
         }
 
         /// <inheriteddoc />
-        public override int GetHashCode()
+        public sealed override int GetHashCode()
         {
             return BaseFunction.GetHashCode();
         }
@@ -124,7 +124,7 @@ namespace MarcelJoachimKloubert.Execution.Functions
         }
 
         /// <inheriteddoc />
-        public override string ToString()
+        public sealed override string ToString()
         {
             return BaseFunction.ToString();
         }

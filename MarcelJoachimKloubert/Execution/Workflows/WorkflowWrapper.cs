@@ -27,59 +27,108 @@
  *                                                                                                                    *
  **********************************************************************************************************************/
 
-using MarcelJoachimKloubert.Execution.Functions;
 using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 
-namespace MarcelJoachimKloubert.Extensions
+namespace MarcelJoachimKloubert.Execution.Workflows
 {
+    #region CLASS: WorkflowWrapper<TFunc>
+
     /// <summary>
-    /// Function extension methods.
+    /// Wraps a workflow.
     /// </summary>
-    public static class MJKFunctionExtensionMethods
+    /// <typeparam name="TWorkflow">Type of the function to wrap.</typeparam>
+    public class WorkflowWrapper<TWorkflow> : WorkflowBase
+        where TWorkflow : IWorkflow
     {
-        #region Methods (1)
+        #region Constructors (1)
 
         /// <summary>
-        /// Async execution of an <see cref="IFunction" />.
+        /// Initializes a new instance of the <see cref="WorkflowWrapper{TWorkflow}" /> class.
         /// </summary>
-        /// <param name="func">The function to execute.</param>
-        /// <param name="params">The list of parameters for the execution.</param>
-        /// <returns>The running task.</returns>
+        /// <param name="baseWorkflow">The function to wrap.</param>
+        /// <param name="syncRoot">The custom object for thread safe operations.</param>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="func" /> is <see langword="null" />.
+        /// <paramref name="baseWorkflow" /> is <see langword="null" />.
         /// </exception>
-        public static async Task<IDictionary<string, object>> ExecuteAsync(this IFunction func, IEnumerable<KeyValuePair<string, object>> @params = null)
+        public WorkflowWrapper(TWorkflow baseWorkflow, object syncRoot = null)
+            : base(syncRoot: syncRoot)
         {
-            if (func == null)
+            if (baseWorkflow == null)
             {
-                throw new ArgumentNullException(nameof(func));
+                throw new ArgumentNullException(nameof(baseWorkflow));
             }
 
-            return await Task.Factory.StartNew(function: (state) =>
-                {
-                    var taskArgs = (object[])state;
-
-                    return ((IFunction)taskArgs[0]).Execute(@params: (IEnumerable<KeyValuePair<string, object>>)taskArgs[1]);
-                }, state: new object[] { func, @params });
+            BaseWorkflow = baseWorkflow;
         }
+
+        #endregion Constructors (1)
+
+        #region Properties (1)
 
         /// <summary>
-        /// Returns a thread safe version of a function.
+        /// Gets the wrapped workflow.
         /// </summary>
-        /// <param name="func">The function to wrap.</param>
-        /// <param name="syncRoot">The custom object for thread safe operations.</param>
-        /// <returns>
-        /// The function wrapper or <see langword="null" /> if <paramref name="func" />
-        /// is also <see langword="null" />.
-        /// </returns>
-        public static IFunction Synchronize(this IFunction func, object syncRoot = null)
+        public TWorkflow BaseWorkflow { get; private set; }
+
+        #endregion Properties (1)
+
+        #region Methods (4)
+
+        /// <inheriteddoc />
+        public sealed override bool Equals(object obj)
         {
-            return func != null ? new SynchronizedFunction(baseFunc: func, syncRoot: syncRoot)
-                                : null;
+            return BaseWorkflow.Equals(obj);
         }
 
-        #endregion Methods (1)
+        /// <inheriteddoc />
+        public sealed override int GetHashCode()
+        {
+            return BaseWorkflow.GetHashCode();
+        }
+
+        /// <inheriteddoc />
+        protected override IEnumerable<WorkflowFunc> GetFunctions()
+        {
+            return BaseWorkflow;
+        }
+
+        /// <inheriteddoc />
+        public sealed override string ToString()
+        {
+            return BaseWorkflow.ToString();
+        }
+
+        #endregion Methods (4)
     }
+
+    #endregion CLASS: WorkflowWrapper<TFunc>
+
+    #region CLASS: WorkflowWrapper
+
+    /// <summary>
+    /// Wraps a workflow.
+    /// </summary>
+    public class WorkflowWrapper : WorkflowWrapper<IWorkflow>
+    {
+        #region Constructors (1)
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="WorkflowWrapper" /> class.
+        /// </summary>
+        /// <param name="baseWorkflow">The workflow to wrap.</param>
+        /// <param name="syncRoot">The custom object for thread safe operations.</param>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="baseWorkflow" /> is <see langword="null" />.
+        /// </exception>
+        public WorkflowWrapper(IWorkflow baseWorkflow, object syncRoot = null)
+            : base(baseWorkflow: baseWorkflow,
+                   syncRoot: syncRoot)
+        {
+        }
+
+        #endregion Constructors (1)
+    }
+
+    #endregion CLASS: WorkflowWrapper
 }

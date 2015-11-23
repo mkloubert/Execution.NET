@@ -27,59 +27,76 @@
  *                                                                                                                    *
  **********************************************************************************************************************/
 
-using MarcelJoachimKloubert.Execution.Functions;
 using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 
-namespace MarcelJoachimKloubert.Extensions
+namespace MarcelJoachimKloubert.Execution.Workflows
 {
+    #region CLASS: WorkflowWrapper<TFunc>
+
     /// <summary>
-    /// Function extension methods.
+    /// Wraps a workflow.
     /// </summary>
-    public static class MJKFunctionExtensionMethods
+    /// <typeparam name="TWorkflow">Type of the function to wrap.</typeparam>
+    public partial class SynchronizedWorkflow<TWorkflow> : WorkflowWrapper<TWorkflow>
+        where TWorkflow : IWorkflow
     {
-        #region Methods (1)
+        #region Constructors (1)
 
         /// <summary>
-        /// Async execution of an <see cref="IFunction" />.
+        /// Initializes a new instance of the <see cref="SynchronizedWorkflow{TWorkflow}" /> class.
         /// </summary>
-        /// <param name="func">The function to execute.</param>
-        /// <param name="params">The list of parameters for the execution.</param>
-        /// <returns>The running task.</returns>
+        /// <param name="baseWorkflow">The function to wrap.</param>
+        /// <param name="syncRoot">The custom object for thread safe operations.</param>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="func" /> is <see langword="null" />.
+        /// <paramref name="baseWorkflow" /> is <see langword="null" />.
         /// </exception>
-        public static async Task<IDictionary<string, object>> ExecuteAsync(this IFunction func, IEnumerable<KeyValuePair<string, object>> @params = null)
+        public SynchronizedWorkflow(TWorkflow baseWorkflow, object syncRoot = null)
+            : base(baseWorkflow: baseWorkflow,
+                   syncRoot: syncRoot)
         {
-            if (func == null)
-            {
-                throw new ArgumentNullException(nameof(func));
-            }
-
-            return await Task.Factory.StartNew(function: (state) =>
-                {
-                    var taskArgs = (object[])state;
-
-                    return ((IFunction)taskArgs[0]).Execute(@params: (IEnumerable<KeyValuePair<string, object>>)taskArgs[1]);
-                }, state: new object[] { func, @params });
         }
 
-        /// <summary>
-        /// Returns a thread safe version of a function.
-        /// </summary>
-        /// <param name="func">The function to wrap.</param>
-        /// <param name="syncRoot">The custom object for thread safe operations.</param>
-        /// <returns>
-        /// The function wrapper or <see langword="null" /> if <paramref name="func" />
-        /// is also <see langword="null" />.
-        /// </returns>
-        public static IFunction Synchronize(this IFunction func, object syncRoot = null)
+        #endregion Constructors (1)
+
+        #region Methods (1)
+
+        /// <inheriteddoc />
+        protected sealed override IEnumerable<WorkflowFunc> GetFunctions()
         {
-            return func != null ? new SynchronizedFunction(baseFunc: func, syncRoot: syncRoot)
-                                : null;
+            return new WorkflowEnumerable(this);
         }
 
         #endregion Methods (1)
     }
+
+    #endregion CLASS: WorkflowWrapper<TFunc>
+
+    #region CLASS: WorkflowWrapper
+
+    /// <summary>
+    /// Wraps a workflow.
+    /// </summary>
+    public class SynchronizedWorkflow : SynchronizedWorkflow<IWorkflow>
+    {
+        #region Constructors (1)
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SynchronizedWorkflow" /> class.
+        /// </summary>
+        /// <param name="baseWorkflow">The workflow to wrap.</param>
+        /// <param name="syncRoot">The custom object for thread safe operations.</param>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="baseWorkflow" /> is <see langword="null" />.
+        /// </exception>
+        public SynchronizedWorkflow(IWorkflow baseWorkflow, object syncRoot = null)
+            : base(baseWorkflow: baseWorkflow,
+                   syncRoot: syncRoot)
+        {
+        }
+
+        #endregion Constructors (1)
+    }
+
+    #endregion CLASS: WorkflowWrapper
 }
