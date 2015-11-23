@@ -204,12 +204,12 @@ namespace MarcelJoachimKloubert.Workflows
                         else
                         {
                             obj = nextAction.Target;
-                            currentMethod = nextAction.Method;
+                            currentMethod = nextAction.GetMethodInfo();
                         }
 
                         if (currentMethod != null)
                         {
-                            type = currentMethod.ReflectedType;
+                            type = currentMethod.DeclaringType;  //TODO
                             allMethods = GetMethodsByType(type);
                         }
 

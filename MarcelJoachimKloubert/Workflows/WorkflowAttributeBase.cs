@@ -86,7 +86,7 @@ namespace MarcelJoachimKloubert.Workflows
         /// </returns>
         public static string GetContractName(Type type)
         {
-            return type != null ? string.Format("{0}{1}{2}", type.Assembly.FullName
+            return type != null ? string.Format("{0}{1}{2}", type.AssemblyQualifiedName
                                                            , "\n"
                                                            , type.FullName)
                                 : null;
