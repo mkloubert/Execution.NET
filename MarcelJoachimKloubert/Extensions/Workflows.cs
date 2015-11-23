@@ -50,14 +50,14 @@ namespace MarcelJoachimKloubert.Extensions
         /// <exception cref="ArgumentNullException">
         /// <paramref name="workflow" /> is <see langword="null" />.
         /// </exception>
-        public static Task<object> ExecuteAsync(this IWorkflow workflow, IEnumerable<object> argsList)
+        public static async Task<object> ExecuteAsync(this IWorkflow workflow, IEnumerable<object> argsList)
         {
             if (workflow == null)
             {
-                throw new ArgumentNullException("workflow");
+                throw new ArgumentNullException(nameof(workflow));
             }
 
-            return Task.Factory.StartNew(function: (state) =>
+            return await Task.Factory.StartNew(function: (state) =>
                 {
                     var taskArgs = (object[])state;
 
@@ -74,14 +74,14 @@ namespace MarcelJoachimKloubert.Extensions
         /// <exception cref="ArgumentNullException">
         /// <paramref name="workflow" /> is <see langword="null" />.
         /// </exception>
-        public static Task<object> ExecuteAsync(this IWorkflow workflow, params object[] args)
+        public static async Task<object> ExecuteAsync(this IWorkflow workflow, params object[] args)
         {
             if (workflow == null)
             {
-                throw new ArgumentNullException("workflow");
+                throw new ArgumentNullException(nameof(workflow));
             }
 
-            return Task.Factory.StartNew(function: (state) =>
+            return await Task.Factory.StartNew(function: (state) =>
                 {
                     var taskArgs = (object[])state;
 
