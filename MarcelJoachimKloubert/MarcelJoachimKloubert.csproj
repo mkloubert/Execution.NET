@@ -63,6 +63,7 @@
     <Compile Include="Execution\Workflows\WorkflowBase.WorkflowExecutionContext.cs" />
     <Compile Include="Execution\Workflows\WorkflowFunc.cs" />
     <Compile Include="Execution\Workflows\WorkflowStartAttribute.cs" />
+    <Compile Include="Extensions\Workflows.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
