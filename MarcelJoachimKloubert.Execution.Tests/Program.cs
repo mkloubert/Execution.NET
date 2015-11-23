@@ -28,7 +28,7 @@
  **********************************************************************************************************************/
 
 using System;
-using MarcelJoachimKloubert.Workflows;
+using MarcelJoachimKloubert.Execution.Workflows;
 
 namespace MarcelJoachimKloubert.Execution.Tests
 {

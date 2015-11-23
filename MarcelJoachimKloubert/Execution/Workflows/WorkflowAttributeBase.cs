@@ -29,7 +29,7 @@
 
 using System;
 
-namespace MarcelJoachimKloubert.Workflows
+namespace MarcelJoachimKloubert.Execution.Workflows
 {
     /// <summary>
     /// A basic workflow attribute.

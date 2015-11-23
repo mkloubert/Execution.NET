@@ -27,31 +27,57 @@
  *                                                                                                                    *
  **********************************************************************************************************************/
 
-using System.Collections.Generic;
+using System;
 
-namespace MarcelJoachimKloubert.Workflows
+namespace MarcelJoachimKloubert.Execution.Workflows
 {
     /// <summary>
-    /// Describes a worklfow.
+    /// Marks a method as point for handling a workflow error / exception.
     /// </summary>
-    public interface IWorkflow : IEnumerable<WorkflowFunc>
+    [AttributeUsage(AttributeTargets.Method,
+                    AllowMultiple = true,
+                    Inherited = false)]
+    public class OnWorkflowErrorAttribute : NextWorkflowStepAttribute
     {
-        #region Methods (2)
+        #region Constructors (3)
 
         /// <summary>
-        /// Executes the workflow.
+        /// Initializes a new instance of the <see cref="OnWorkflowErrorAttribute" /> class.
         /// </summary>
-        /// <param name="argList">The arguments for the execution.</param>
-        /// <returns>The final result of the execution.</returns>
-        object Execute(IEnumerable<object> argList);
+        /// <param name="member">The value for the <see cref="NextWorkflowStepAttribute.Member" /> property.</param>
+        /// <param name="contract">The value for the <see cref="WorkflowAttributeBase.Contract" /> property.</param>
+        public OnWorkflowErrorAttribute(string member, Type contract)
+            : base(member: member,
+                   contract: contract)
+        {
+        }
 
         /// <summary>
-        /// Executes the workflow.
+        /// Initializes a new instance of the <see cref="OnWorkflowErrorAttribute" /> class.
         /// </summary>
-        /// <param name="args">The arguments for the execution.</param>
-        /// <returns>The final result of the execution.</returns>
-        object Execute(params object[] args);
+        /// <param name="member">The value for the <see cref="NextWorkflowStepAttribute.Member" /> property.</param>
+        /// <param name="contractName">The value for the <see cref="WorkflowAttributeBase.Contract" /> property.</param>
+        /// <exception cref="ArgumentException">
+        /// <paramref name="member" /> is invalid.
+        /// </exception>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="member" /> is <see langword="null" />.
+        /// </exception>
+        public OnWorkflowErrorAttribute(string member, string contractName)
+            : base(member: member,
+                   contractName: contractName)
+        {
+        }
 
-        #endregion Methods (2)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="OnWorkflowErrorAttribute" /> class.
+        /// </summary>
+        /// <param name="member">The value for the <see cref="NextWorkflowStepAttribute.Member" /> property.</param>
+        public OnWorkflowErrorAttribute(string member)
+            : base(member: member)
+        {
+        }
+
+        #endregion Constructors
     }
 }

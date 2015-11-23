@@ -45,21 +45,21 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Workflows\AttributeWorkflowBase.cs" />
-    <Compile Include="Workflows\DelegateWorkflow.cs" />
-    <Compile Include="Workflows\IWorkflow.cs" />
-    <Compile Include="Workflows\IWorkflowExecutionContext.cs" />
-    <Compile Include="Workflows\OnWorkflowErrorAttribute.cs" />
-    <Compile Include="Workflows\SimpleWorkflowBase.cs" />
-    <Compile Include="Workflows\WorkflowAction.cs" />
-    <Compile Include="Workflows\WorkflowAttributeBase.cs" />
-    <Compile Include="Workflows\WorkflowBase.cs" />
-    <Compile Include="Workflows\WorkflowBase.WorkflowExecutionContext.cs">
+    <Compile Include="Execution\Workflows\AttributeWorkflowBase.cs" />
+    <Compile Include="Execution\Workflows\DelegateWorkflow.cs" />
+    <Compile Include="Execution\Workflows\IWorkflow.cs" />
+    <Compile Include="Execution\Workflows\IWorkflowExecutionContext.cs" />
+    <Compile Include="Execution\Workflows\OnWorkflowErrorAttribute.cs" />
+    <Compile Include="Execution\Workflows\SimpleWorkflowBase.cs" />
+    <Compile Include="Execution\Workflows\WorkflowAction.cs" />
+    <Compile Include="Execution\Workflows\WorkflowAttributeBase.cs" />
+    <Compile Include="Execution\Workflows\WorkflowBase.cs" />
+    <Compile Include="Execution\Workflows\WorkflowBase.WorkflowExecutionContext.cs">
       <DependentUpon>WorkflowBase.cs</DependentUpon>
     </Compile>
-    <Compile Include="Workflows\WorkflowFunc.cs" />
-    <Compile Include="Workflows\NextWorkflowStepAttribute.cs" />
-    <Compile Include="Workflows\WorkflowStartAttribute.cs" />
+    <Compile Include="Execution\Workflows\WorkflowFunc.cs" />
+    <Compile Include="Execution\Workflows\NextWorkflowStepAttribute.cs" />
+    <Compile Include="Execution\Workflows\WorkflowStartAttribute.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="..\LICENSE">

@@ -27,50 +27,11 @@
  *                                                                                                                    *
  **********************************************************************************************************************/
 
-using System;
-
-namespace MarcelJoachimKloubert.Workflows
+namespace MarcelJoachimKloubert.Execution.Workflows
 {
     /// <summary>
-    /// A workflow based on a delegate.
+    /// Describes a workflow action.
     /// </summary>
-    public class DelegateWorkflow : SimpleWorkflowBase
-    {
-        #region Fields (1)
-
-        private readonly WorkflowAction _START_ACTION;
-
-        #endregion Fields (1)
-
-        #region Constructors (1)
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="DelegateWorkflow" /> class.
-        /// </summary>
-        /// <param name="startAction">The start action.</param>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="startAction" /> is <see langword="null" />.
-        /// </exception>
-        public DelegateWorkflow(WorkflowAction startAction)
-        {
-            if (startAction == null)
-            {
-                throw new ArgumentNullException("startAction");
-            }
-
-            _START_ACTION = startAction;
-        }
-
-        #endregion Constructors (1)
-
-        #region Methods (1)
-
-        /// <inheriteddoc />
-        protected sealed override void ExecuteFirstStep(IWorkflowExecutionContext ctx)
-        {
-            _START_ACTION(ctx);
-        }
-
-        #endregion Methods (1)
-    }
+    /// <param name="ctx">The current execution context.</param>
+    public delegate void WorkflowAction(IWorkflowExecutionContext ctx);
 }
