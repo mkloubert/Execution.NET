@@ -114,6 +114,10 @@
     <None Include="project.json" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Execution\Functions\FunctionBase.cs" />
+    <Compile Include="Execution\Functions\FunctionWrapper.cs" />
+    <Compile Include="Execution\Functions\IFunction.cs" />
+    <Compile Include="Execution\Functions\SynchronizedFunction.cs" />
     <Compile Include="Execution\Workflows\AttributeWorkflowBase.cs" />
     <Compile Include="Execution\Workflows\DelegateWorkflow.cs" />
     <Compile Include="Execution\Workflows\IWorkflow.cs" />
@@ -127,6 +131,7 @@
     <Compile Include="Execution\Workflows\WorkflowBase.WorkflowExecutionContext.cs" />
     <Compile Include="Execution\Workflows\WorkflowFunc.cs" />
     <Compile Include="Execution\Workflows\WorkflowStartAttribute.cs" />
+    <Compile Include="Extensions\Functions.cs" />
     <Compile Include="Extensions\Workflows.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Content Include="Properties\MarcelJoachimKloubert.rd.xml" />
