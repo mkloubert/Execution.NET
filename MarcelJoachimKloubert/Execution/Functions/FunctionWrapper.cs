@@ -69,25 +69,16 @@ namespace MarcelJoachimKloubert.Execution.Functions
         /// <summary>
         /// Gets the wrapped function.
         /// </summary>
-        public TFunc BaseFunction { get; private set; }
+        public TFunc BaseFunction { get; }
 
         /// <inheriteddoc />
-        public sealed override Guid Id
-        {
-            get { return BaseFunction.Id; }
-        }
+        public sealed override Guid Id => BaseFunction.Id;
 
         /// <inheriteddoc />
-        public sealed override string Name
-        {
-            get { return BaseFunction.Name; }
-        }
+        public sealed override string Name => BaseFunction.Name;
 
         /// <inheriteddoc />
-        public sealed override string Namespace
-        {
-            get { return BaseFunction.Namespace; }
-        }
+        public sealed override string Namespace => BaseFunction.Namespace;
 
         #endregion Properties (4)
 
