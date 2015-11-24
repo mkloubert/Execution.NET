@@ -86,7 +86,7 @@ namespace MarcelJoachimKloubert.Execution.Functions
         /// <inheriteddoc />
         public sealed override string Namespace
         {
-            get { return base.Namespace; }
+            get { return BaseFunction.Namespace; }
         }
 
         #endregion Properties (4)
