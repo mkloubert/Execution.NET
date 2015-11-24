@@ -50,7 +50,7 @@ namespace MarcelJoachimKloubert.Extensions
         {
             if (cmd == null)
             {
-                throw new ArgumentNullException("cmd");
+                throw new ArgumentNullException(nameof(cmd));
             }
 
             return Task.Factory.StartNew(action: (state) =>
