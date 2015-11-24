@@ -114,11 +114,17 @@
     <None Include="project.json" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Execution\Commands\CommandBase.cs" />
+    <Compile Include="Execution\Commands\CommandWrapper.cs" />
+    <Compile Include="Execution\Commands\ICommand.cs" />
+    <Compile Include="Execution\Commands\SynchronizedCommand.cs" />
     <Compile Include="Execution\Functions\FunctionBase.cs" />
     <Compile Include="Execution\Functions\FunctionWrapper.cs" />
     <Compile Include="Execution\Functions\IFunction.cs" />
     <Compile Include="Execution\Functions\SynchronizedFunction.cs" />
     <Compile Include="Execution\Workflows\AttributeWorkflowBase.cs" />
+    <Compile Include="Execution\Workflows\ConfigurableWorkflow.cs" />
+    <Compile Include="Execution\Workflows\ConfigurableWorkflow.WorkflowConfig.cs" />
     <Compile Include="Execution\Workflows\DelegateWorkflow.cs" />
     <Compile Include="Execution\Workflows\IWorkflow.cs" />
     <Compile Include="Execution\Workflows\IWorkflowExecutionContext.cs" />
@@ -134,6 +140,7 @@
     <Compile Include="Execution\Workflows\WorkflowFunc.cs" />
     <Compile Include="Execution\Workflows\WorkflowStartAttribute.cs" />
     <Compile Include="Execution\Workflows\WorkflowWrapper.cs" />
+    <Compile Include="Extensions\Commands.cs" />
     <Compile Include="Extensions\Functions.cs" />
     <Compile Include="Extensions\Workflows.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
