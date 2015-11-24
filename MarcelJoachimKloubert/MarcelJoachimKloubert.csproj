@@ -52,6 +52,7 @@
   <ItemGroup>
     <Compile Include="Execution\Commands\CommandBase.cs" />
     <Compile Include="Execution\Commands\CommandWrapper.cs" />
+    <Compile Include="Execution\Commands\DelegateCommand.cs" />
     <Compile Include="Execution\Commands\ICommand.cs" />
     <Compile Include="Execution\Commands\SynchronizedCommand.cs" />
     <Compile Include="Execution\Functions\FunctionBase.cs" />
