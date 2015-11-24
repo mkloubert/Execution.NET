@@ -28,50 +28,126 @@
  **********************************************************************************************************************/
 
 using System;
-using MarcelJoachimKloubert.Execution.Workflows;
 
-namespace MarcelJoachimKloubert.Execution.Tests
+namespace MarcelJoachimKloubert.Execution.Commands
 {
-    internal static class Program
+    /// <summary>
+    /// A basic command.
+    /// </summary>
+    /// <typeparam name="TParam">Type of the parameter.</typeparam>
+    public abstract class CommandBase<TParam> : ICommand
     {
-        #region Methods (1)
+        #region Fields (1)
 
-        private static void Main(string[] args)
+        private readonly object _SYNC_ROOT;
+
+        #endregion Fields (1)
+
+        #region Constructors (1)
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CommandBase{TParam}" /> class.
+        /// </summary>
+        /// <param name="syncRoot">The custom object for thread safe operations.</param>
+        protected CommandBase(object syncRoot = null)
         {
-            try
-            {
-                var res = new ConfigurableWorkflow().StartWith((ctx) =>
-                    {
-                        if (ctx != null)
-                        {
-                            ctx.NextValue = DateTimeOffset.Now;
-                        }
-                    })
-                .ContinueWith((ctx) =>
-                    {
-                        if (ctx != null)
-                        {
-                            ctx.Result = ctx.PreviousValue;
-                        }
-                    }).Execute();
-
-                if (res != null)
-                {
-                    
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("[ERROR]: {0}", ex.GetBaseException());
-            }
-
-            Console.WriteLine();
-            Console.WriteLine();
-
-            Console.WriteLine("===== ENTER =====");
-            Console.ReadLine();
+            _SYNC_ROOT = syncRoot ?? new object();
         }
 
-        #endregion Methods (1)
+        #endregion Constructors (1)
+
+        #region Events (1)
+
+        /// <inheriteddoc />
+        public event EventHandler CanExecuteChanged;
+
+        #endregion Events (1)
+
+        #region Properties (2)
+
+        /// <summary>
+        /// Gets the object for thread safe operations.
+        /// </summary>
+        public virtual object SyncRoot
+        {
+            get { return _SYNC_ROOT; }
+        }
+
+        /// <summary>
+        /// Gets or sets an object that should be linked with that instance.
+        /// </summary>
+        public virtual object Tag { get; set; }
+
+        #endregion Properties (2)
+
+        #region Methods (7)
+
+        /// <inheriteddoc />
+        public abstract bool CanExecute(TParam parameter);
+
+        bool ICommand.CanExecute(object parameter)
+        {
+            return CanExecute(ConvertParam(parameter));
+        }
+
+        /// <summary>
+        /// Converts an object to the underlying parameter type.
+        /// </summary>
+        /// <param name="parameter">The value to convert.</param>
+        /// <returns></returns>
+        protected virtual TParam ConvertParam(object parameter)
+        {
+            if (null == parameter)
+            {
+                if (typeof(TParam).IsValueType)
+                {
+                    return default(TParam);
+                }
+            }
+
+            return (TParam)parameter;
+        }
+
+        /// <summary>
+        /// <see cref="ICommand.Execute(object)" />
+        /// </summary>
+        public virtual void Execute(TParam parameter = default(TParam))
+        {
+            if (!CanExecute(parameter))
+            {
+                return;
+            }
+
+            OnExecute(parameter);
+        }
+
+        void ICommand.Execute(object parameter)
+        {
+            Execute(ConvertParam(parameter));
+        }
+
+        /// <summary>
+        /// The logic for the <see cref="CommandBase{TParam}.Execute(TParam)" /> method.
+        /// </summary>
+        /// <param name="parameter">The parameter to handle.</param>
+        protected abstract void OnExecute(TParam parameter);
+
+        /// <summary>
+        /// Raises the <see cref="CommandBase{TParam}.CanExecuteChanged" /> event.
+        /// </summary>
+        /// <returns>Event was raised or not.</returns>
+        public bool RaiseCanExecuteChanged()
+        {
+            var handler = CanExecuteChanged;
+            if (handler != null)
+            {
+                handler(this, EventArgs.Empty);
+                return true;
+            }
+
+            return false;
+        }
+
+        #endregion Methods (7)
     }
 }

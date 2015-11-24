@@ -27,51 +27,49 @@
  *                                                                                                                    *
  **********************************************************************************************************************/
 
-using System;
-using MarcelJoachimKloubert.Execution.Workflows;
+using MarcelJoachimKloubert.Execution.Commands;
+using System.Threading.Tasks;
 
-namespace MarcelJoachimKloubert.Execution.Tests
+namespace MarcelJoachimKloubert.Extensions
 {
-    internal static class Program
+    /// <summary>
+    /// Extension methods for <see cref="ICommand" />s.
+    /// </summary>
+    public static class MJKCommandExtensionMethods
     {
-        #region Methods (1)
+        #region Methods (2)
 
-        private static void Main(string[] args)
+        /// <summary>
+        /// Executes a command async.
+        /// </summary>
+        /// <param name="cmd">The command to execute.</param>
+        /// <param name="parameter">The optional parameter to submit.</param>
+        /// <returns>The running task.</returns>
+        public static Task ExecuteAsync(this ICommand cmd, object parameter = null)
         {
-            try
-            {
-                var res = new ConfigurableWorkflow().StartWith((ctx) =>
-                    {
-                        if (ctx != null)
-                        {
-                            ctx.NextValue = DateTimeOffset.Now;
-                        }
-                    })
-                .ContinueWith((ctx) =>
-                    {
-                        if (ctx != null)
-                        {
-                            ctx.Result = ctx.PreviousValue;
-                        }
-                    }).Execute();
-
-                if (res != null)
+            return Task.Factory.StartNew(action: (state) =>
                 {
-                    
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("[ERROR]: {0}", ex.GetBaseException());
-            }
+                    var taskArgs = (object[])state;
 
-            Console.WriteLine();
-            Console.WriteLine();
-
-            Console.WriteLine("===== ENTER =====");
-            Console.ReadLine();
+                    ((ICommand)taskArgs[0]).Execute(taskArgs[1]);
+                }, state: new object[] { cmd, parameter });
         }
 
-        #endregion Methods (1)
+        /// <summary>
+        /// Returns a thread safe version of a command.
+        /// </summary>
+        /// <param name="cmd">The command to wrap.</param>
+        /// <param name="syncRoot">The custom object for thread safe operations.</param>
+        /// <returns>
+        /// The function wrapper or <see langword="null" /> if <paramref name="cmd" />
+        /// is also <see langword="null" />.
+        /// </returns>
+        public static ICommand Synchronize(this ICommand cmd, object syncRoot = null)
+        {
+            return cmd != null ? new SynchronizedCommand(cmd, syncRoot: syncRoot)
+                               : null;
+        }
+
+        #endregion Methods (2)
     }
 }
