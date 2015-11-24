@@ -27,6 +27,7 @@
  *                                                                                                                    *
  **********************************************************************************************************************/
 
+using System;
 using MarcelJoachimKloubert.Execution.Commands;
 using System.Threading.Tasks;
 
@@ -47,6 +48,11 @@ namespace MarcelJoachimKloubert.Extensions
         /// <returns>The running task.</returns>
         public static Task ExecuteAsync(this ICommand cmd, object parameter = null)
         {
+            if (cmd == null)
+            {
+                throw new ArgumentNullException("cmd");
+            }
+
             return Task.Factory.StartNew(action: (state) =>
                 {
                     var taskArgs = (object[])state;
