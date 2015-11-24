@@ -46,14 +46,14 @@ namespace MarcelJoachimKloubert.Extensions
         /// <param name="cmd">The command to execute.</param>
         /// <param name="parameter">The optional parameter to submit.</param>
         /// <returns>The running task.</returns>
-        public static Task ExecuteAsync(this ICommand cmd, object parameter = null)
+        public static async Task ExecuteAsync(this ICommand cmd, object parameter = null)
         {
             if (cmd == null)
             {
                 throw new ArgumentNullException(nameof(cmd));
             }
 
-            return Task.Factory.StartNew(action: (state) =>
+            await Task.Factory.StartNew(action: (state) =>
                 {
                     var taskArgs = (object[])state;
 
