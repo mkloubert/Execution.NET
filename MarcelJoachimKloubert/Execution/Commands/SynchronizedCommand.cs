@@ -28,50 +28,86 @@
  **********************************************************************************************************************/
 
 using System;
-using MarcelJoachimKloubert.Execution.Workflows;
 
-namespace MarcelJoachimKloubert.Execution.Tests
+namespace MarcelJoachimKloubert.Execution.Commands
 {
-    internal static class Program
+    #region CLASS: SynchromizedCommand<TCmd>
+
+    /// <summary>
+    /// A thread safe command.
+    /// </summary>
+    /// <typeparam name="TCmd">Type of the command.</typeparam>
+    public class SynchromizedCommand<TCmd> : CommandWrapper<TCmd>
+        where TCmd : ICommand
     {
-        #region Methods (1)
+        #region Constructors (1)
 
-        private static void Main(string[] args)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CommandWrapper{TCmd}" /> class.
+        /// </summary>
+        /// <param name="baseCmd">The command to wrap.</param>
+        /// <param name="syncRoot">The custom object for thread safe operations.</param>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="baseCmd" /> is <see langword="null" />.
+        /// </exception>
+        public SynchromizedCommand(TCmd baseCmd, object syncRoot = null)
+            : base(baseCmd: baseCmd,
+                   syncRoot: syncRoot)
         {
-            try
-            {
-                var res = new ConfigurableWorkflow().StartWith((ctx) =>
-                    {
-                        if (ctx != null)
-                        {
-                            ctx.NextValue = DateTimeOffset.Now;
-                        }
-                    })
-                .ContinueWith((ctx) =>
-                    {
-                        if (ctx != null)
-                        {
-                            ctx.Result = ctx.PreviousValue;
-                        }
-                    }).Execute();
-
-                if (res != null)
-                {
-                    
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("[ERROR]: {0}", ex.GetBaseException());
-            }
-
-            Console.WriteLine();
-            Console.WriteLine();
-
-            Console.WriteLine("===== ENTER =====");
-            Console.ReadLine();
         }
 
-        #endregion Methods (1)
+        #endregion Constructors (1)
+
+        #region Methods (2)
+
+        /// <inheriteddoc />
+        public sealed override bool CanExecute(object parameter)
+        {
+            lock (SyncRoot)
+            {
+                return base.CanExecute(parameter);
+            }
+        }
+
+        /// <inheriteddoc />
+        public sealed override void Execute(object parameter = null)
+        {
+            lock (SyncRoot)
+            {
+                base.Execute(parameter);
+            }
+        }
+
+        #endregion Methods (2)
     }
+
+    #endregion CLASS: SynchromizedCommand<TCmd>
+
+    #region CLASS: SynchromizedCommand
+
+    /// <summary>
+    /// A thread safe command.
+    /// </summary>
+    public class SynchronizedCommand : SynchromizedCommand<ICommand>
+    {
+        #region Constructors (1)
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SynchronizedCommand" /> class.
+        /// </summary>
+        /// <param name="baseCmd">The command to wrap.</param>
+        /// <param name="syncRoot">The custom object for thread safe operations.</param>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="baseCmd" /> is <see langword="null" />.
+        /// </exception>
+        public SynchronizedCommand(ICommand baseCmd, object syncRoot = null)
+            : base(baseCmd: baseCmd,
+                   syncRoot: syncRoot)
+        {
+        }
+
+        #endregion Constructors (1)
+    }
+
+    #endregion CLASS: SynchromizedCommand
 }

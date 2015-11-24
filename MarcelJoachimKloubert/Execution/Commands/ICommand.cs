@@ -28,50 +28,44 @@
  **********************************************************************************************************************/
 
 using System;
-using MarcelJoachimKloubert.Execution.Workflows;
 
-namespace MarcelJoachimKloubert.Execution.Tests
+namespace MarcelJoachimKloubert.Execution.Commands
 {
-    internal static class Program
+    #region INTERFACE: ICommand
+
+    /// <summary>
+    /// Describes a command.
+    /// </summary>
+    public interface ICommand
     {
-        #region Methods (1)
+        #region Events (1)
 
-        private static void Main(string[] args)
-        {
-            try
-            {
-                var res = new ConfigurableWorkflow().StartWith((ctx) =>
-                    {
-                        if (ctx != null)
-                        {
-                            ctx.NextValue = DateTimeOffset.Now;
-                        }
-                    })
-                .ContinueWith((ctx) =>
-                    {
-                        if (ctx != null)
-                        {
-                            ctx.Result = ctx.PreviousValue;
-                        }
-                    }).Execute();
+        /// <summary>
+        /// Is invoked when the invocation of <see cref="ICommand.CanExecute(object)" /> method
+        /// would return another value.
+        /// </summary>
+        event EventHandler CanExecuteChanged;
 
-                if (res != null)
-                {
-                    
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("[ERROR]: {0}", ex.GetBaseException());
-            }
+        #endregion Events (1)
 
-            Console.WriteLine();
-            Console.WriteLine();
+        #region Methods (2)
 
-            Console.WriteLine("===== ENTER =====");
-            Console.ReadLine();
-        }
+        /// <summary>
+        /// Checks if <see cref="ICommand.Execute(object)" /> can be executed
+        /// with a specific parameter or not.
+        /// </summary>
+        /// <param name="parameter">The paremeter to check.</param>
+        /// <returns>Can be executed or not.</returns>
+        bool CanExecute(object parameter);
 
-        #endregion Methods (1)
+        /// <summary>
+        /// Executes the command.
+        /// </summary>
+        /// <param name="parameter">The optional parameter to submit.</param>
+        void Execute(object parameter = null);
+
+        #endregion Methods (2)
     }
+
+    #endregion INTERFACE: ICommand
 }

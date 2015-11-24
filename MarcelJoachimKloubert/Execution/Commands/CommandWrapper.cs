@@ -28,50 +28,112 @@
  **********************************************************************************************************************/
 
 using System;
-using MarcelJoachimKloubert.Execution.Workflows;
 
-namespace MarcelJoachimKloubert.Execution.Tests
+namespace MarcelJoachimKloubert.Execution.Commands
 {
-    internal static class Program
+    #region CLASS: CommandWrapper<TCmd>
+
+    /// <summary>
+    /// Wraps a command.
+    /// </summary>
+    /// <typeparam name="TCmd">Type of the command.</typeparam>
+    public class CommandWrapper<TCmd> : CommandBase<object>
+        where TCmd : ICommand
     {
-        #region Methods (1)
+        #region Constructors (1)
 
-        private static void Main(string[] args)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CommandWrapper{TCmd}" /> class.
+        /// </summary>
+        /// <param name="baseCmd">The command to wrap.</param>
+        /// <param name="syncRoot">The custom object for thread safe operations.</param>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="baseCmd" /> is <see langword="null" />.
+        /// </exception>
+        public CommandWrapper(TCmd baseCmd, object syncRoot = null)
+            : base(syncRoot: syncRoot)
         {
-            try
+            if (baseCmd == null)
             {
-                var res = new ConfigurableWorkflow().StartWith((ctx) =>
-                    {
-                        if (ctx != null)
-                        {
-                            ctx.NextValue = DateTimeOffset.Now;
-                        }
-                    })
-                .ContinueWith((ctx) =>
-                    {
-                        if (ctx != null)
-                        {
-                            ctx.Result = ctx.PreviousValue;
-                        }
-                    }).Execute();
-
-                if (res != null)
-                {
-                    
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("[ERROR]: {0}", ex.GetBaseException());
+                throw new ArgumentNullException("baseCmd");
             }
 
-            Console.WriteLine();
-            Console.WriteLine();
-
-            Console.WriteLine("===== ENTER =====");
-            Console.ReadLine();
+            BaseCommand = baseCmd;
         }
 
-        #endregion Methods (1)
+        #endregion Constructors (1)
+
+        #region Properties (1)
+
+        /// <summary>
+        /// Gets the wrapped command.
+        /// </summary>
+        public TCmd BaseCommand { get; private set; }
+
+        #endregion Properties (1)
+
+        #region Methods (5)
+
+        /// <inheriteddoc />
+        public override bool CanExecute(object parameter)
+        {
+            return BaseCommand.CanExecute(parameter);
+        }
+
+        /// <inheriteddoc />
+        public override bool Equals(object obj)
+        {
+            return BaseCommand.Equals(obj);
+        }
+
+        /// <inheriteddoc />
+        public override int GetHashCode()
+        {
+            return BaseCommand.GetHashCode();
+        }
+
+        /// <inheriteddoc />
+        protected sealed override void OnExecute(object parameter)
+        {
+            BaseCommand.Execute(parameter);
+        }
+
+        /// <inheriteddoc />
+        public override string ToString()
+        {
+            return BaseCommand.ToString();
+        }
+
+        #endregion Methods (5)
     }
+
+    #endregion CLASS: CommandWrapper<TCmd>
+
+    #region CLASS: CommandWrapper
+
+    /// <summary>
+    /// Wraps a command.
+    /// </summary>
+    public class CommandWrapper : CommandWrapper<ICommand>
+    {
+        #region Constructors (1)
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CommandWrapper" /> class.
+        /// </summary>
+        /// <param name="baseCmd">The command to wrap.</param>
+        /// <param name="syncRoot">The custom object for thread safe operations.</param>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="baseCmd" /> is <see langword="null" />.
+        /// </exception>
+        public CommandWrapper(ICommand baseCmd, object syncRoot = null)
+            : base(baseCmd: baseCmd,
+                   syncRoot: syncRoot)
+        {
+        }
+
+        #endregion Constructors (1)
+    }
+
+    #endregion CLASS: CommandWrapper
 }
