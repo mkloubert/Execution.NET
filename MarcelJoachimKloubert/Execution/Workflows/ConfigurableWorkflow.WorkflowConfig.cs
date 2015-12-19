@@ -161,30 +161,15 @@ namespace MarcelJoachimKloubert.Execution.Workflows
                 return Next = new WorkflowConfig(Workflow, nextAction, this);
             }
 
-            IWorkflowConfig IWorkflowConfig.ContinueWith(WorkflowAction nextAction)
-            {
-                return ContinueWith(nextAction: nextAction);
-            }
+            IWorkflowConfig IWorkflowConfig.ContinueWith(WorkflowAction nextAction) => ContinueWith(nextAction: nextAction);
 
-            internal WorkflowConfig ContinueWith(Action action)
-            {
-                return ContinueWith(nextAction: ToAction(action));
-            }
+            internal WorkflowConfig ContinueWith(Action action) => ContinueWith(nextAction: ToAction(action));
 
-            IWorkflowConfig IWorkflowConfig.ContinueWith(Action action)
-            {
-                return ContinueWith(action: action);
-            }
+            IWorkflowConfig IWorkflowConfig.ContinueWith(Action action) => ContinueWith(action: action);
 
-            public object Execute(IEnumerable<object> argList)
-            {
-                return Workflow.Execute(argList: argList);
-            }
+            public object Execute(IEnumerable<object> argList) => Workflow.Execute(argList: argList);
 
-            public object Execute(params object[] args)
-            {
-                return Workflow.Execute(args: args);
-            }
+            public object Execute(params object[] args) => Workflow.Execute(args: args);
 
             internal WorkflowConfig IfFails(WorkflowAction errorAction)
             {
@@ -196,30 +181,15 @@ namespace MarcelJoachimKloubert.Execution.Workflows
                 return OnError = new WorkflowConfig(Workflow, errorAction, this);
             }
 
-            IWorkflowConfig IWorkflowConfig.IfFails(WorkflowAction errorAction)
-            {
-                return IfFails(errorAction: errorAction);
-            }
+            IWorkflowConfig IWorkflowConfig.IfFails(WorkflowAction errorAction) => IfFails(errorAction: errorAction);
 
-            internal WorkflowConfig IfFails(Action action)
-            {
-                return IfFails(errorAction: ToAction(action));
-            }
+            internal WorkflowConfig IfFails(Action action) => IfFails(errorAction: ToAction(action));
 
-            IWorkflowConfig IWorkflowConfig.IfFails(Action action)
-            {
-                return IfFails(action: action);
-            }
+            IWorkflowConfig IWorkflowConfig.IfFails(Action action) => IfFails(action: action);
 
-            internal WorkflowConfig Stop()
-            {
-                return PARENT ?? this;
-            }
+            internal WorkflowConfig Stop() => PARENT ?? this;
 
-            IWorkflowConfig IWorkflowConfig.Stop()
-            {
-                return Stop();
-            }
+            IWorkflowConfig IWorkflowConfig.Stop() => Stop();
 
             private static WorkflowAction ToAction(Action action)
             {

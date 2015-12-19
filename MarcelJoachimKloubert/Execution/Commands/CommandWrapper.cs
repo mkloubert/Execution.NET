@@ -75,34 +75,19 @@ namespace MarcelJoachimKloubert.Execution.Commands
         #region Methods (5)
 
         /// <inheriteddoc />
-        public override bool CanExecute(object parameter)
-        {
-            return BaseCommand.CanExecute(parameter);
-        }
+        public override bool CanExecute(object parameter) => BaseCommand.CanExecute(parameter);
 
         /// <inheriteddoc />
-        public override bool Equals(object obj)
-        {
-            return BaseCommand.Equals(obj);
-        }
+        public override bool Equals(object obj) => BaseCommand.Equals(obj);
 
         /// <inheriteddoc />
-        public override int GetHashCode()
-        {
-            return BaseCommand.GetHashCode();
-        }
+        public override int GetHashCode() => BaseCommand.GetHashCode();
 
         /// <inheriteddoc />
-        protected sealed override void OnExecute(object parameter)
-        {
-            BaseCommand.Execute(parameter);
-        }
+        protected sealed override void OnExecute(object parameter) => BaseCommand.Execute(parameter);
 
         /// <inheriteddoc />
-        public override string ToString()
-        {
-            return BaseCommand.ToString();
-        }
+        public override string ToString() => BaseCommand.ToString();
 
         #endregion Methods (5)
     }

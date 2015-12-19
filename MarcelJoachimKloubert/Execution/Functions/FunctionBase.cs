@@ -74,16 +74,10 @@ namespace MarcelJoachimKloubert.Execution.Functions
         public abstract Guid Id { get; }
 
         /// <inheriteddoc />
-        public virtual string Name
-        {
-            get { return GetType().Name; }
-        }
+        public virtual string Name => GetType().Name;
 
         /// <inheriteddoc />
-        public virtual string Namespace
-        {
-            get { return GetType().Namespace; }
-        }
+        public virtual string Namespace => GetType().Namespace;
 
         /// <summary>
         /// Gets the object for thread safe operations.
@@ -103,19 +97,13 @@ namespace MarcelJoachimKloubert.Execution.Functions
         /// Creates an empty storage for input parameters.
         /// </summary>
         /// <returns>The created, empty dictionary.</returns>
-        protected virtual IDictionary<string, object> CreateEmptyInputParamDictionary()
-        {
-            return null;
-        }
+        protected virtual IDictionary<string, object> CreateEmptyInputParamDictionary() => null;
 
         /// <summary>
         /// Creates an empty storage for output parameters.
         /// </summary>
         /// <returns>The created, empty dictionary.</returns>
-        protected virtual IDictionary<string, object> CreateEmptyOutputParamDictionary()
-        {
-            return CreateEmptyInputParamDictionary();
-        }
+        protected virtual IDictionary<string, object> CreateEmptyOutputParamDictionary() => CreateEmptyInputParamDictionary();
 
         /// <inheriteddoc />
         public override bool Equals(object obj)
@@ -145,10 +133,7 @@ namespace MarcelJoachimKloubert.Execution.Functions
         }
 
         /// <inheriteddoc />
-        public override int GetHashCode()
-        {
-            return base.GetHashCode();
-        }
+        public override int GetHashCode() => base.GetHashCode();
 
         /// <summary>
         /// The logic for the <see cref="FunctionBase.Execute(IEnumerable{KeyValuePair{string, object}})" /> method.

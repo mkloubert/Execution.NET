@@ -77,10 +77,7 @@ namespace MarcelJoachimKloubert.Execution.Commands
         /// <inheriteddoc />
         public abstract bool CanExecute(TParam parameter);
 
-        bool ICommand.CanExecute(object parameter)
-        {
-            return CanExecute(ConvertParam(parameter));
-        }
+        bool ICommand.CanExecute(object parameter) => CanExecute(ConvertParam(parameter));
 
         /// <summary>
         /// Converts an object to the underlying parameter type.

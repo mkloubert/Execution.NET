@@ -125,7 +125,9 @@
     <Compile Include="Execution\Functions\SynchronizedFunction.cs" />
     <Compile Include="Execution\Workflows\AttributeWorkflowBase.cs" />
     <Compile Include="Execution\Workflows\ConfigurableWorkflow.cs" />
-    <Compile Include="Execution\Workflows\ConfigurableWorkflow.WorkflowConfig.cs" />
+    <Compile Include="Execution\Workflows\ConfigurableWorkflow.WorkflowConfig.cs">
+      <DependentUpon>ConfigurableWorkflow.cs</DependentUpon>
+    </Compile>
     <Compile Include="Execution\Workflows\DelegateWorkflow.cs" />
     <Compile Include="Execution\Workflows\IWorkflow.cs" />
     <Compile Include="Execution\Workflows\IWorkflowExecutionContext.cs" />
@@ -133,11 +135,15 @@
     <Compile Include="Execution\Workflows\OnWorkflowErrorAttribute.cs" />
     <Compile Include="Execution\Workflows\SimpleWorkflowBase.cs" />
     <Compile Include="Execution\Workflows\SynchronizedWorkflow.cs" />
-    <Compile Include="Execution\Workflows\SynchronizedWorkflow.Enumerable.cs" />
+    <Compile Include="Execution\Workflows\SynchronizedWorkflow.Enumerable.cs">
+      <DependentUpon>SynchronizedWorkflow.cs</DependentUpon>
+    </Compile>
     <Compile Include="Execution\Workflows\WorkflowAction.cs" />
     <Compile Include="Execution\Workflows\WorkflowAttributeBase.cs" />
     <Compile Include="Execution\Workflows\WorkflowBase.cs" />
-    <Compile Include="Execution\Workflows\WorkflowBase.WorkflowExecutionContext.cs" />
+    <Compile Include="Execution\Workflows\WorkflowBase.WorkflowExecutionContext.cs">
+      <DependentUpon>WorkflowBase.cs</DependentUpon>
+    </Compile>
     <Compile Include="Execution\Workflows\WorkflowFunc.cs" />
     <Compile Include="Execution\Workflows\WorkflowStartAttribute.cs" />
     <Compile Include="Execution\Workflows\WorkflowWrapper.cs" />

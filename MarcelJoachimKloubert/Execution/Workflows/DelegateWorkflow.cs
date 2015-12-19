@@ -66,10 +66,7 @@ namespace MarcelJoachimKloubert.Execution.Workflows
         #region Methods (1)
 
         /// <inheriteddoc />
-        protected sealed override void ExecuteFirstStep(IWorkflowExecutionContext ctx)
-        {
-            _START_ACTION(ctx);
-        }
+        protected sealed override void ExecuteFirstStep(IWorkflowExecutionContext ctx) => _START_ACTION(ctx);
 
         #endregion Methods (1)
     }

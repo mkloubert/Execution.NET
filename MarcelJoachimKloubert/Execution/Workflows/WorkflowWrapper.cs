@@ -69,35 +69,23 @@ namespace MarcelJoachimKloubert.Execution.Workflows
         /// <summary>
         /// Gets the wrapped workflow.
         /// </summary>
-        public TWorkflow BaseWorkflow { get; private set; }
+        public TWorkflow BaseWorkflow { get; }
 
         #endregion Properties (1)
 
         #region Methods (4)
 
         /// <inheriteddoc />
-        public sealed override bool Equals(object obj)
-        {
-            return BaseWorkflow.Equals(obj);
-        }
+        public sealed override bool Equals(object obj) => BaseWorkflow.Equals(obj);
 
         /// <inheriteddoc />
-        public sealed override int GetHashCode()
-        {
-            return BaseWorkflow.GetHashCode();
-        }
+        public sealed override int GetHashCode() => BaseWorkflow.GetHashCode();
 
         /// <inheriteddoc />
-        protected override IEnumerable<WorkflowFunc> GetFunctions()
-        {
-            return BaseWorkflow;
-        }
+        protected override IEnumerable<WorkflowFunc> GetFunctions() => BaseWorkflow;
 
         /// <inheriteddoc />
-        public sealed override string ToString()
-        {
-            return BaseWorkflow.ToString();
-        }
+        public sealed override string ToString() => BaseWorkflow.ToString();
 
         #endregion Methods (4)
     }

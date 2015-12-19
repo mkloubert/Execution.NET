@@ -62,10 +62,7 @@ namespace MarcelJoachimKloubert.Execution.Workflows
         /// <summary>
         /// Gets the start object.
         /// </summary>
-        public virtual object Object
-        {
-            get { return this; }
-        }
+        public virtual object Object => this;
 
         #endregion Properties (2)
 
@@ -88,7 +85,7 @@ namespace MarcelJoachimKloubert.Execution.Workflows
                 // methods with 'WorkflowStartAttribute'
                 var methodsWithAttribs = allMethods.Where(m => m.GetCustomAttributes(typeof(WorkflowStartAttribute), true)
                                                                 .OfType<WorkflowStartAttribute>()
-                                                                .Any(a => a.GetType().Equals(typeof(WorkflowStartAttribute)) && 
+                                                                .Any(a => a.GetType().Equals(typeof(WorkflowStartAttribute)) &&
                                                                           a.Contract == contract));
 
                 currentMethod = methodsWithAttribs.SingleOrDefault();
@@ -106,14 +103,14 @@ namespace MarcelJoachimKloubert.Execution.Workflows
                 yield return (args) =>
                     {
                         var ctx = new WorkflowExecutionContext()
-                            {
-                                Arguments = args,
-                                LastError = lastError,
-                                PreviousValue = previousValue,
-                                Result = result,
-                                ThrowErrors = throwErrors,
-                                Value = value,
-                            };
+                        {
+                            Arguments = args,
+                            LastError = lastError,
+                            PreviousValue = previousValue,
+                            Result = result,
+                            ThrowErrors = throwErrors,
+                            Value = value,
+                        };
 
                         // first try to find method for next step
                         MethodInfo nextMethod = null;

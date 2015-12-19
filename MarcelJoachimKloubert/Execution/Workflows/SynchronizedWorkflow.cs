@@ -62,10 +62,7 @@ namespace MarcelJoachimKloubert.Execution.Workflows
         #region Methods (1)
 
         /// <inheriteddoc />
-        protected sealed override IEnumerable<WorkflowFunc> GetFunctions()
-        {
-            return new WorkflowEnumerable(this);
-        }
+        protected sealed override IEnumerable<WorkflowFunc> GetFunctions() => new WorkflowEnumerable(this);
 
         #endregion Methods (1)
     }

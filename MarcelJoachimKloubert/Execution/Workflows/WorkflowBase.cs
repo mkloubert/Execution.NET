@@ -137,10 +137,7 @@ namespace MarcelJoachimKloubert.Execution.Workflows
         /// <returns>The list of functions.</returns>
         protected abstract IEnumerable<WorkflowFunc> GetFunctions();
 
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
         #endregion Methods (5)
     }

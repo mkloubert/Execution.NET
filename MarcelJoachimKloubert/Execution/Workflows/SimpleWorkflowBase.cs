@@ -82,10 +82,7 @@ namespace MarcelJoachimKloubert.Execution.Workflows
         [WorkflowStart]
         [NextWorkflowStep("ExecuteNextStep")]
         [OnWorkflowError("HandleError")]
-        protected void StartWorkflow(IWorkflowExecutionContext ctx)
-        {
-            ExecuteFirstStep(ctx);
-        }
+        protected void StartWorkflow(IWorkflowExecutionContext ctx) => ExecuteFirstStep(ctx);
 
         #endregion Methods (4)
     }

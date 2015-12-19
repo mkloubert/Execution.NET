@@ -29,7 +29,6 @@
 
 using System.Collections;
 using System.Collections.Generic;
-using System.Runtime.InteropServices;
 
 namespace MarcelJoachimKloubert.Execution.Workflows
 {
@@ -56,15 +55,9 @@ namespace MarcelJoachimKloubert.Execution.Workflows
 
             #region Methods (2)
 
-            public IEnumerator<WorkflowFunc> GetEnumerator()
-            {
-                return new WorkflowEnumerator(_WORKFLOW);
-            }
+            public IEnumerator<WorkflowFunc> GetEnumerator() => new WorkflowEnumerator(_WORKFLOW);
 
-            IEnumerator IEnumerable.GetEnumerator()
-            {
-                return GetEnumerator();
-            }
+            IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
             #endregion Methods (2)
         }
@@ -116,10 +109,7 @@ namespace MarcelJoachimKloubert.Execution.Workflows
                 }
             }
 
-            object IEnumerator.Current
-            {
-                get { return Current; }
-            }
+            object IEnumerator.Current => Current;
 
             #endregion Properties (2)
 

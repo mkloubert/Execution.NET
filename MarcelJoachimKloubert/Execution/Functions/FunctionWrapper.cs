@@ -85,16 +85,10 @@ namespace MarcelJoachimKloubert.Execution.Functions
         #region Methods (4)
 
         /// <inheriteddoc />
-        public sealed override bool Equals(object obj)
-        {
-            return BaseFunction.Equals(obj);
-        }
+        public sealed override bool Equals(object obj) => BaseFunction.Equals(obj);
 
         /// <inheriteddoc />
-        public sealed override int GetHashCode()
-        {
-            return BaseFunction.GetHashCode();
-        }
+        public sealed override int GetHashCode() => BaseFunction.GetHashCode();
 
         /// <inheriteddoc />
         protected override void OnExecute(IDictionary<string, object> input, IDictionary<string, object> output)
@@ -115,10 +109,7 @@ namespace MarcelJoachimKloubert.Execution.Functions
         }
 
         /// <inheriteddoc />
-        public sealed override string ToString()
-        {
-            return BaseFunction.ToString();
-        }
+        public sealed override string ToString() => BaseFunction.ToString();
 
         #endregion Methods (4)
     }

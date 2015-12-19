@@ -90,16 +90,10 @@ namespace MarcelJoachimKloubert.Execution.Commands
         #region Methods (6)
 
         /// <inheriteddoc />
-        public sealed override bool CanExecute(TParam parameter)
-        {
-            return _CAN_EXECUTE(this, parameter);
-        }
+        public sealed override bool CanExecute(TParam parameter) => _CAN_EXECUTE(this, parameter);
 
         /// <inheriteddoc />
-        protected sealed override void OnExecute(TParam parameter)
-        {
-            _EXECUTE(this, parameter);
-        }
+        protected sealed override void OnExecute(TParam parameter) => _EXECUTE(this, parameter);
 
         /// <summary>
         /// Converts an <see cref="Func{T}" /> delegate to an <see cref="CanExecutePredicate" /> instance.
