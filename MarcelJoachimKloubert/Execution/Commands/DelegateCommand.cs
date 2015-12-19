@@ -58,11 +58,11 @@ namespace MarcelJoachimKloubert.Execution.Commands
         {
             if (executeAction == null)
             {
-                throw new ArgumentNullException("executeAction");
+                throw new ArgumentNullException(nameof(executeAction));
             }
 
             _EXECUTE = executeAction;
-            _CAN_EXECUTE = canExecutePredicate ?? new CanExecutePredicate((cmd, p) => true);
+            _CAN_EXECUTE = canExecutePredicate ?? ((cmd, p) => true);
         }
 
         #endregion Constructors (1)
